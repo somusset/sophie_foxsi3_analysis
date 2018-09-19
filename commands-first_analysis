@@ -2,7 +2,7 @@ f = 'data_180907_111001'
 dir = 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activities\Lab_and_calibration\Calibration data and plots\wsmr\20180907\'
 
 add_path,'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activities\calsoft_copy\'
-
+add_path, 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Science_Analysis\foxsi-science\'
 
 ;----------------------------
 ; create IDL sav files
@@ -17,6 +17,30 @@ data = formatter_packet(dir+f+'.dat',detnum)		; process the binary data file
 save, data,file=str
 
 ;-------------------------------------
+; lvl0 and lvl1 data
+;-------------------------------------
+
+data_lvl0_D0 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=0)
+data_lvl0_D1 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=1)
+data_lvl0_D2 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=2)
+data_lvl0_D3 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=3)
+data_lvl0_D4 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=4)
+data_lvl0_D5 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=5)
+data_lvl0_D6 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=6)
+
+save, data_lvl0_D0, data_lvl0_D1, data_lvl0_D2, data_lvl0_D3, data_lvl0_D4, data_lvl0_D5, data_lvl0_D6, file = F+'_lvl0.sav'
+
+LVL1 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = DETNUM, GROUND=1)
+
+;-------------------------------------
 ; extract HV data and plot over time
 ;-------------------------------------
+
+HV = LVL1.HV
+Timeel = findgen(n_elements(lvl1))/500./60.
+PLOT, Timeel, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2
+; zoom on high voltage going to 200V
+PLOT, Timeel[358000:364590], hv[358000:364590], ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,300]
+
+
 
