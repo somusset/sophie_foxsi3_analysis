@@ -1,0 +1,22 @@
+f = 'data_180907_111001'
+dir = 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activities\Lab_and_calibration\Calibration data and plots\wsmr\20180907\'
+
+add_path,'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activities\calsoft_copy\'
+
+
+;----------------------------
+; create IDL sav files
+;----------------------------
+
+cd, dir
+
+detnum = 0			
+name = 'D'+strtrim(detnum,2)+'_'+f
+str = 'struct_D'+strtrim(detnum,2)+'_'+f+'.dat'	
+data = formatter_packet(dir+f+'.dat',detnum)		; process the binary data file
+save, data,file=str
+
+;-------------------------------------
+; extract HV data and plot over time
+;-------------------------------------
+
