@@ -3,6 +3,7 @@ dir = 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activiti
 
 add_path,'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Calibration_and_Flight_activities\calsoft_copy\'
 add_path, 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Science_Analysis\foxsi-science\'
+add_path, 'C:\Users\SMusset\Documents\GitHub\FOXSI3-analysis\'
 
 ;----------------------------
 ; create IDL sav files
@@ -33,7 +34,7 @@ save, data_lvl0_D0, data_lvl0_D1, data_lvl0_D2, data_lvl0_D3, data_lvl0_D4, data
 LVL1 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = DETNUM, GROUND=1)
 
 ;-------------------------------------
-; extract HV data and plot over time
+; extract HV data and plot over time - first try
 ;-------------------------------------
 
 HV = LVL1.HV
@@ -41,6 +42,69 @@ Timeel = findgen(n_elements(lvl1))/500./60.
 PLOT, Timeel, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2
 ; zoom on high voltage going to 200V
 PLOT, Timeel[358000:364590], hv[358000:364590], ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,300]
+
+;-------------------------------------
+; extract HV data and plot over time - extract problematic frame
+;-------------------------------------
+
+frame_count = [ lvl1[0:363768].frame_counter, lvl1[363770:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+hv = [ lvl1[0:363768].hv, lvl1[363770:n_elements(lvl1)-1].hv ]
+plot, time_elp, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,210]
+nozero = where(hv ne 0)
+fff = foxsi3_first_indice_in_consec(nozero)
+
+time = time_elp - time_elp[fff[3]] + 0.5
+plot, time, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,210]
+oplot, [0,0], [-50, 250], linestyle=1, thick=2
+oplot, [110,110]/60., [-50, 250], linestyle=2, thick=2
+oplot, ([110,110]+120)/60., [-50, 250], linestyle=2, thick=2
+oplot, ([110,110]+120+30)/60., [-50, 250], linestyle=2, thick=2
+oplot, ([110,110]+120+30+150)/60., [-50, 250], linestyle=2, thick=2
+oplot, ([110,110]+120+30+150+60)/60., [-50, 250], linestyle=2, thick=2
+
+;-------------------------------------
+; find targets indices
+;-------------------------------------
+
+launch = where(time gt 0.)
+obs = where(time gt 110./60.)
+target2 = where(time gt (110.+120)/60.)
+target3 = where(time gt (110.+120+30)/60.)
+target4 = where(time gt (110.+120+30+150)/60.)
+ENDobs = where(time gt (110.+120+30+150+60)/60.)
+
+print, 'target 1 indices ', obs[0], target2[0]-1
+print, 'target 2 indices ', target2[0], target3[0]-1
+print, 'target 3 indices ', target3[0], target4[0]-1
+print, 'target 4 indices ', target4[0], endobs[0]-1
+
+; assuming 4 sec pointing at beginning of target 
+; and 2 second uncertainty at the end
+
+dt1 = 120.
+dt2 = 30.
+dt3 = 150.
+dt4 = 60.
+
+target1beg = where(time gt (110.+4.)/60.)
+target1end = where(time gt (110.+dt1-2.)/60.)
+target2beg = where(time gt (110.+dt1+4.)/60.)
+target2end = where(time gt (110.+dt1+dt2-2.)/60.)
+target3beg = where(time gt (110.+dt1+dt2+4.)/60.)
+target3end = where(time gt (110.+dt1+dt2+dt3-2.)/60.)
+target4beg = where(time gt (110.+dt1+dt2+dt3+4.)/60.)
+target4end = where(time gt (110.+dt1+dt2+dt3+dt4-2.)/60.)
+
+print, 'target 1 indices ', target1beg[0], target1end[0]
+print, 'target 2 indices ', target2beg[0], target2end[0]
+print, 'target 3 indices ', target3beg[0], target3end[0]
+print, 'target 4 indices ', target4beg[0], target4end[0]
+
+target1 = [target1beg[0], target1end[0]]
+target2 = [target2beg[0], target2end[0]]
+target3 = [target3beg[0], target3end[0]]
+target4 = [target4beg[0], target4end[0]]
 
 
 
