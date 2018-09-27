@@ -32,29 +32,73 @@ data_lvl0_D6 = FORMATTER_DATA_TO_LEVEL0(dir+f+'.dat', DETECTOR=6)
 save, data_lvl0_D0, data_lvl0_D1, data_lvl0_D2, data_lvl0_D3, data_lvl0_D4, data_lvl0_D5, data_lvl0_D6, file = F+'_lvl0.sav'
 
 LVL1 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = DETNUM, GROUND=1)
+LVL1_0 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 0, GROUND=1)
+LVL1_2 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 2, GROUND=1)
+LVL1_3 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 3, GROUND=1, /cdte, only_hv=0)
+LVL1_4 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 4, GROUND=1)
+LVL1_5 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 5, GROUND=1, /cdte, only_hv=0)
+LVL1_6 = FOXSI_LEVEL0_TO_LEVEL1(F+'_lvl0.sav', DETECTOR = 6, GROUND=1)
+
+save, LVL1_0, LVL1_2, LVL1_3, LVL1_4, LVL1_5, LVL1_6, file=f+'_lvl1.sav'
 
 ;-------------------------------------
 ; extract HV data and plot over time - first try
 ;-------------------------------------
-
-HV = LVL1.HV
-Timeel = findgen(n_elements(lvl1))/500./60.
-PLOT, Timeel, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2
-; zoom on high voltage going to 200V
-PLOT, Timeel[358000:364590], hv[358000:364590], ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,300]
-
+;
+; HV = LVL1.HV
+; Timeel = findgen(n_elements(lvl1))/500./60.
+; PLOT, Timeel, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, ; thick=3, xth=2, yth=2, chart=2
+; ; zoom on high voltage going to 200V
+; PLOT, Timeel[358000:364590], hv[358000:364590], ytitle='High Voltage [V]', ; xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,300]
+;
 ;-------------------------------------
 ; extract HV data and plot over time - extract problematic frame
 ;-------------------------------------
 
 frame_count = [ lvl1[0:363768].frame_counter, lvl1[363770:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
 time_elp = 2.*frame_count /60. /1000. ; in minutes
+
+;det0
 hv = [ lvl1[0:363768].hv, lvl1[363770:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:363768].frame_counter, lvl1[363770:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+
+;det2
+;363631
+hv = [ lvl1[0:363630].hv, lvl1[363632:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:363630].frame_counter, lvl1[363632:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+
+; det6
+hv = [ lvl1[0:364223].hv, lvl1[364225:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:364223].frame_counter, lvl1[364225:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+
+; det4
+hv = [ lvl1[0:364460].hv, lvl1[364462:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:364460].frame_counter, lvl1[364462:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+
+
+; det3
+hv = [ lvl1[0:444].hv, lvl1[446:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:444].frame_counter, lvl1[446:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+time = time_elp - time_elp[fff[3]] + 0.5
+
+; det5
+hv = [ lvl1[0:1241].hv, lvl1[1243:n_elements(lvl1)-1].hv ]
+frame_count = [ lvl1[0:1241].frame_counter, lvl1[1243:n_elements(lvl1)-1].frame_counter ] - lvl1[0].frame_counter
+time_elp = 2.*frame_count /60. /1000. ; in minutes
+time = time_elp - time_elp[fff[3]] + 0.5
+
 plot, time_elp, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,210]
 nozero = where(hv ne 0)
 fff = foxsi3_first_indice_in_consec(nozero)
 
-time = time_elp - time_elp[fff[3]] + 0.5
+;time = time_elp - time_elp[fff[3]] + 0.5 ; for all det but det 3
+time = time_elp - time_elp[fff[2]] + 0.5 ; for CdTe det 3
+
 plot, time, hv, ytitle='High Voltage [V]', xtitle='Elapsed time [Minutes]', chars=2, thick=3, xth=2, yth=2, chart=2, yr=[-10,210]
 oplot, [0,0], [-50, 250], linestyle=1, thick=2
 oplot, [110,110]/60., [-50, 250], linestyle=2, thick=2
@@ -106,5 +150,28 @@ target2 = [target2beg[0], target2end[0]]
 target3 = [target3beg[0], target3end[0]]
 target4 = [target4beg[0], target4end[0]]
 
+;-----------------------------------------------------------
+; plot image
+;-----------------------------------------------------------
+
+foxsi3_lvl1_image, lvl1, 0, [363860,364042],im, pay=1, phys=1, plot_im=1
+
+foxsi3_lvl1_image, lvl1_0, 0, [363860,364042],im, pay=1, phys=0, plot_im=1, title=', target 1'
+foxsi3_lvl1_image, lvl1_2, 2, [363705,363894],im, pay=1, phys=0, plot_im=1, title=', target 1'
+foxsi3_lvl1_image, lvl1_3, 3, [535,689],      im, pay=1, phys=0, plot_im=1, title=', target 1', cdte=1
+foxsi3_lvl1_image, lvl1_4, 4, [364512,364645],im, pay=1, phys=0, plot_im=1, title=', target 1'
+foxsi3_lvl1_image, lvl1_5, 5, [1325,1464],    im, pay=1, phys=0, plot_im=1, title=', target 1', cdte=1
+foxsi3_lvl1_image, lvl1_6, 6, [367917,390593],im, pay=1, phys=0, plot_im=1, title=', target 1'
+
+
+; target 4
+
+
+foxsi3_lvl1_image, lvl1_0, 0, [364351,364432],im, pay=1, phys=0, plot_im=1, title=', target 4'
+foxsi3_lvl1_image, lvl1_2, 2, [364152,364214],im, pay=1, phys=0, plot_im=1, title=', target 4'
+foxsi3_lvl1_image, lvl1_3, 3, [949,1033],     im, pay=1, phys=0, plot_im=1, title=', target 4', cdte=1
+foxsi3_lvl1_image, lvl1_4, 4, [364851,364905],im, pay=1, phys=0, plot_im=1, title=', target 4'
+foxsi3_lvl1_image, lvl1_5, 5, [57824,58303],im, pay=1, phys=0, plot_im=1, title=', target 4', cdte=1
+foxsi3_lvl1_image, lvl1_6, 6, [465457,490574],im, pay=1, phys=0, plot_im=1, title=', target 4'
 
 

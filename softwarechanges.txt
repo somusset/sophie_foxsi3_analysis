@@ -1,0 +1,21 @@
+List of software changes made during my FOXSI3 data analysis
+
+----------------------------------------------------------------------
+----- 			In FOXSI SCIENCE			 -----
+----------------------------------------------------------------------
+
+*** done:
+ - in get_payload_coords.pro, I added a CdTe keyword, to change geometry (additional reflexion and different pixel size)
+ - in foxsi_level0_to_level1, I renamed the keyword "year" into "only_hv" and I call get_payload_coords with the CdTe keyword
+
+*** to be done:
+
+----------------------------------------------------------------------
+----- 			   In CALSOFT	           		 -----
+----------------------------------------------------------------------
+
+*** done:
+
+*** to be done:
+ - rename procedures that have identical names in FOXSI Science, eg level0_to_level1
+   by adding cal_ at the beginning of the name
