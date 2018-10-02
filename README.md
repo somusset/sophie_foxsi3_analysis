@@ -2,6 +2,10 @@
 
 Contains commands and procedures used for the analysis of the active region target in FOXSI-3 (target 1 and 4).
 
+;---------------------------------------------------------------------------------
+; level1 data with all frames
+;---------------------------------------------------------------------------------
+
 ; detector 0
 
 Frame number 363769 is weird = frame_counter value is to high and HV value is 70 (134 is expected)
@@ -61,6 +65,23 @@ target 2 indices         1467        1500
 target 3 indices         3235       57667
 target 4 indices        57824       58303
 
+
+;---------------------------------------------------------------------------------
+; level2 data with only HV=200V frames
+;---------------------------------------------------------------------------------
+
+Time in minutes after launch, where we are at 200V
+analysis with D0 -->      1.17090
+analysis with D2 -->      1.18033
+analysis with D4 -->      1.17873
+analysis with D6 -->      1.16950
+mean value in minutes -->       1.1748650
+mean value in seconds -->       70.491898
+
+
+;---------------------------------------------------------------------------------
+; notes
+;---------------------------------------------------------------------------------
 
 To go to level 2, need calibration file, named as 'peaks_det108.sav'
 ==> ask Athiray

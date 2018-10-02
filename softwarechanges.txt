@@ -7,6 +7,7 @@ List of software changes made during my FOXSI3 data analysis
 *** done:
  - in get_payload_coords.pro, I added a CdTe keyword, to change geometry (additional reflexion and different pixel size)
  - in foxsi_level0_to_level1, I renamed the keyword "year" into "only_hv" and I call get_payload_coords with the CdTe keyword
+ - in the foxsi_level1_to_level2, I introduced the possibility to have 2018 as an entry to the keyword year
 
 *** to be done:
 
