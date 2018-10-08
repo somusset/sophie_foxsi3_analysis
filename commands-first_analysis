@@ -324,6 +324,7 @@ detnum = lvl2[0].det_num
 ef = lvl2.error_flag
 EFF = foxsi3_error_flag_analysis(FIX(ef))
 
+foxsi3_error_flag_time_evolution, data_lvl2_d6, tlaunch, /ground, thick=3
 
 ; level2 image - OBSOLETE
 ;-------------------------
