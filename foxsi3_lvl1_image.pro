@@ -91,7 +91,8 @@ ENDIF
 ; plot if needed
 IF plot_im EQ 1 THEN BEGIN
   IF physical EQ 1 THEN subtitle = 'payload coordinates [arcsec]' ELSE subtitle='detector coordinates [pixels]'
-  i = image(img, margin=0.1, rgb_table=ct, axis_style=2, dim=[1000,1000],xmajor=9, xminor=16, ymajor=9, yminor=16, title='det. num. '+strtrim(detnum,2)+title, xtitle=subtitle, ytitle=subtitle)
+;  i = image(img, margin=0.1, rgb_table=ct, axis_style=2, dim=[1000,1000], xmajor=9, xminor=16, ymajor=9, yminor=16, $
+;    title='det. num. '+strtrim(detnum,2)+title, xtitle=subtitle, ytitle=subtitle)
 ;  i = image(img, rgb_table=ct, title = ttle, dimensions=[1500,1500], margin=0.05)
 ENDIF
 
